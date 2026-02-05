@@ -15,7 +15,7 @@ git init
 git config user.name "%GName%"
 git config user.email "%GEmail%"
 
-git branch -M main
+git branch -M master
 
 echo.
 echo Adding remote repository...
@@ -32,7 +32,7 @@ git commit -m "Live version: Solid Visuals & Chill Speed"
 
 echo.
 echo ==========================================
-echo READY TO PUSH!
+echo READY TO PUSH TO MASTER!
 echo.
 echo 1. A window might pop up to sign in to GitHub.
 echo 2. If it asks for a password in the terminal, use a "Personal Access Token".
@@ -40,7 +40,7 @@ echo    (But usually the popup window handles it).
 echo ==========================================
 echo.
 pause
-git push -u origin main
+git push -u origin master
 
 echo.
 echo ==========================================
