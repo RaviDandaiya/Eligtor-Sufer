@@ -40,7 +40,7 @@ echo    (But usually the popup window handles it).
 echo ==========================================
 echo.
 pause
-git push -u origin master
+git push -u origin master --force
 
 echo.
 echo ==========================================
