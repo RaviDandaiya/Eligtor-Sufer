@@ -39,6 +39,33 @@ export class AudioManager {
         this._playNoise(0.5);
     }
 
+    playThemeChange() {
+        if (!this.isInitialized || this.isMuted) return;
+        // Ascending arpeggio for theme change
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                this._playNote(freq, 'sine', 0.15, 0.3);
+            }, i * 80);
+        });
+    }
+
+    playLevelComplete() {
+        if (!this.isInitialized || this.isMuted) return;
+        // Victory fanfare
+        const melody = [
+            { freq: 523.25, delay: 0 },    // C5
+            { freq: 659.25, delay: 100 },  // E5
+            { freq: 783.99, delay: 200 },  // G5
+            { freq: 1046.50, delay: 300 }  // C6
+        ];
+        melody.forEach(note => {
+            setTimeout(() => {
+                this._playNote(note.freq, 'triangle', 0.2, 0.4);
+            }, note.delay);
+        });
+    }
+
     startMusic() {
         if (!this.isInitialized || this.musicInterval) return;
 

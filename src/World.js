@@ -33,6 +33,15 @@ export const THEMES = {
         lightColor: 0xff6666,
         name: 'Bloodstream',
         wireframe: true
+    },
+    OUTSIDE_WORLD: {
+        roadColor: 0x222222,
+        emissiveColor: 0xffffff,
+        fogColor: 0x87CEEB, // Sky Blue
+        lightColor: 0xffffff,
+        name: 'Outside World',
+        wireframe: false,
+        isTransparent: true
     }
 };
 
@@ -139,7 +148,7 @@ export default class World {
             return t;
         })();
 
-        // 4. DIAMOND-WIRED (Gold Run)
+    // 4. DIAMOND-WIRED (Gold Run)
         const diamondTexture = (() => {
             const c = document.createElement('canvas');
             c.width = 1024; c.height = 1024;
@@ -159,11 +168,55 @@ export default class World {
             return t;
         })();
 
+        // 5. OPEN ROAD (Transparent Top)
+        const openTexture = (() => {
+            const c = document.createElement('canvas');
+            c.width = 1024; c.height = 1024;
+            const ctx = c.getContext('2d');
+            // Transparent background
+            ctx.clearRect(0, 0, 1024, 1024);
+            
+            // Bottom half (Road) - Texture wraps Y. Let's make the middle transparent (top of tube) 
+            // and edges solid (bottom of tube). 
+            // Actually, usually in standard UV cylinder mapping, the seam is at the back.
+            // Let's assume we want the "floor" to be visible.
+            
+            // Fill "Floor" (0-0.3 and 0.7-1.0 might be the bottom if seam is top, or 0.25-0.75 if seam is bottom)
+            // Let's try filling the bottom 50% visually. 
+            // In ThreeJS TubeGeometry, it often wraps around. 
+            // Let's paint the whole thing with a clear gap in the middle.
+            
+            ctx.fillStyle = '#222222';
+            ctx.fillRect(0, 0, 1024, 1024); // Fill all first
+            
+            // Clear the "Ceiling"
+            ctx.clearRect(0, 256, 1024, 512); // Clear middle 50% horizontally (if V is height)
+            
+            // Draw Road Lines on the solid parts
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 100, 1024, 20); // Side line
+            ctx.fillRect(0, 900, 1024, 20); // Side line (other side)
+            
+            // Dashed center line? Maybe simple grid
+            ctx.strokeStyle = '#555555';
+            ctx.lineWidth = 5;
+            for(let i=0; i<1024; i+=100) {
+                 ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 256); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(i, 768); ctx.lineTo(i, 1024); ctx.stroke();
+            }
+
+            const t = new THREE.CanvasTexture(c);
+            t.wrapS = t.wrapT = THREE.RepeatWrapping;
+            t.repeat.set(4, 1);
+            return t;
+        })();
+
         this.textures = {
             'Bold Minimal': squareTexture,
             'Classic Wire': hexTexture,
             'Bloodstream': veinTexture,
-            'Gold Run': diamondTexture
+            'Gold Run': diamondTexture,
+            'Outside World': openTexture
         };
 
         const tubeMaterial = new THREE.MeshStandardMaterial({
@@ -174,7 +227,8 @@ export default class World {
             color: 0x000510,
             roughness: 0.2,
             metalness: 0.8,
-            side: THREE.BackSide
+            side: THREE.BackSide,
+            transparent: true // Enable transparency support
         });
 
         this.tubeMesh = new THREE.Mesh(this.tubeGeometry, tubeMaterial);
@@ -204,6 +258,17 @@ export default class World {
         this.tubeMesh.material.emissiveMap = texture;
         this.tubeMesh.material.wireframe = theme.wireframe;
         this.tubeMesh.material.emissiveIntensity = theme.wireframe ? 2.0 : 1.0;
+        
+        // Transparency handling for Outside World
+        if (theme.isTransparent) {
+            this.tubeMesh.material.transparent = true;
+            this.tubeMesh.material.opacity = 1.0; // Ensure visible parts are opaque
+             // Use alphaTest to handle the clear patches cleanly if needed, or just standard blending
+            this.tubeMesh.material.alphaTest = 0.5; 
+        } else {
+            this.tubeMesh.material.transparent = false;
+            this.tubeMesh.material.alphaTest = 0;
+        }
 
         this.scene.fog.color.setHex(theme.fogColor);
         this.scene.background.setHex(theme.fogColor);

@@ -321,11 +321,17 @@ export default class Game {
         console.log("Lap Complete! Generating new obstacles...");
         this.lapCount++;
 
-        // Cycle through the 4 core themes
-        const themes = ['PURPLE_NEON', 'WIRE_TUNNEL', 'GOLD_RUN', 'BLOODSTREAM'];
+        // Cycle through the 5 core themes
+        const themes = ['PURPLE_NEON', 'WIRE_TUNNEL', 'GOLD_RUN', 'BLOODSTREAM', 'OUTSIDE_WORLD'];
         const themeIndex = this.lapCount % themes.length;
         this.world.setTheme(themes[themeIndex]);
         this.showNotification(`LEVEL ${this.lapCount + 1}: ${this.world.currentTheme.name}`);
+
+        // Sound Effects
+        this.audio.playLevelComplete();
+        setTimeout(() => {
+            this.audio.playThemeChange();
+        }, 400); // Play theme change sound after level complete
 
         // Balanced Speed Bump
         this.player.speed += 0.01; // Reduced from 0.02

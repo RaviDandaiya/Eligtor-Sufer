@@ -71,10 +71,18 @@ export class ObstacleSystem {
 
         this.scene.add(mesh);
 
-        // Store for collision
+        // Store for collision and animation
         const collider = new THREE.Box3();
         collider.setFromObject(mesh);
-        mesh.userData = { type: 'obstacle', collider: collider };
+        // Store initial position and normal for animation reference
+        mesh.userData = {
+            type: 'obstacle',
+            subtype: type,
+            collider: collider,
+            initialPos: position.clone(),
+            normal: normal.clone(),
+            randomOffset: Math.random() * 100 // Randomize animation phase
+        };
         this.obstacles.push(mesh);
     }
 
@@ -97,10 +105,29 @@ export class ObstacleSystem {
 
     update(delta, time) {
         this.obstacles.forEach(obs => {
+            const data = obs.userData;
+
+            // 1. Universal Pulse (Existing)
             if (obs.children.length > 1) {
                 const wire = obs.children[1];
-                const pulse = 1.05 + Math.sin(time * 3) * 0.05;
+                const pulse = 1.05 + Math.sin(time * 3 + data.randomOffset) * 0.05;
                 wire.scale.set(pulse, pulse, pulse);
+            }
+
+            // 2. Specific Animations
+            if (data.subtype === 'spike') {
+                // ROTATION: Spin spikes around their local Y axis (which points up/out)
+                // Since we set orientation using quaternion, local Y is the direction of the normal.
+                obs.rotateY(delta * 2.0);
+            } else if (data.subtype === 'crate') {
+                // HOVER / BOBBING: Move slightly up and down along the normal
+                const hoverOffset = Math.sin(time * 2 + data.randomOffset) * 0.5;
+                const newPos = data.initialPos.clone().add(data.normal.clone().multiplyScalar(hoverOffset));
+                obs.position.copy(newPos);
+
+                // Slow tumble (optional, might look messy if not careful, let's stick to hover + slow spin)
+                obs.rotateY(delta * 0.5);
+                obs.rotateZ(delta * 0.2);
             }
         });
     }

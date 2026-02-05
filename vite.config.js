@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 
 export default defineConfig(({ command }) => {
     const config = {
-        base: './', // Use relative paths for flexibility
+        base: '/Eligtor-Sufer/', // Correct base for GitHub Pages
         build: {
             outDir: 'dist',
         }
