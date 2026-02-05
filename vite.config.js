@@ -2,14 +2,16 @@ import { defineConfig } from 'vite'
 
 export default defineConfig(({ command }) => {
     const config = {
-        base: '/Eligtor-Sufer/', // Correct base for GitHub Pages
+        // Use environment variable for base, default to root for Vercel
+        // Set VITE_BASE_PATH=/Eligtor-Sufer/ for GitHub Pages
+        base: process.env.VITE_BASE_PATH || '/',
         build: {
             outDir: 'dist',
         }
     }
 
     if (command === 'serve') {
-        // During development, use root base so http://localhost:5173/ works
+        // During development, always use root base
         config.base = '/'
     }
 
