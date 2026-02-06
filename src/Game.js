@@ -123,7 +123,8 @@ export default class Game {
         const controls = {
             'control-left': 'ArrowLeft',
             'control-right': 'ArrowRight',
-            'control-jump': 'Space'
+            'control-jump': 'Space',
+            'control-boost': 'ArrowUp'
         };
 
         Object.entries(controls).forEach(([id, key]) => {
