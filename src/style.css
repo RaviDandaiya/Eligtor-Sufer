@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,18 +11,26 @@
   color-scheme: dark;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background-color: #000;
   user-select: none;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 #game-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100vw;
   height: 100vh;
   z-index: 1;
@@ -126,6 +140,24 @@ body {
   border-left: 10px solid white;
 }
 
+#selection-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+}
+
 #start-screen {
   background: rgba(0, 0, 0, 0.8);
   padding: 50px;
@@ -144,13 +176,6 @@ h1 {
   font-weight: 900;
   letter-spacing: 5px;
   text-shadow: 0 0 20px #00ffff;
-}
-
-.character-preview {
-  margin-bottom: 30px;
-  color: #00ffff;
-  font-weight: bold;
-  letter-spacing: 2px;
 }
 
 #start-btn {
@@ -176,11 +201,13 @@ h1 {
 
 /* Mobile Controls */
 #mobile-controls {
-  position: absolute;
-  bottom: 20px;
+  position: fixed;
+  bottom: 0;
   left: 0;
-  right: 0;
-  display: flex;
+  width: 100%;
+  height: 150px;
+  display: none;
+  /* Hidden on desktop */
   justify-content: space-between;
   align-items: flex-end;
   padding: 0 40px 40px 40px;
@@ -193,14 +220,15 @@ h1 {
   display: flex;
   gap: 20px;
   pointer-events: none;
+  align-items: flex-end;
 }
 
 .control-btn {
-  width: 90px;
-  height: 90px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 85px;
+  height: 85px;
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(5px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -212,127 +240,92 @@ h1 {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.1s, background 0.1s, opacity 0.2s;
-  opacity: 0.4;
-  /* Low opacity as requested */
+  opacity: 0.5;
 }
 
 .control-btn:active {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   transform: scale(0.95);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 #control-jump {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  background: rgba(0, 255, 255, 0.1);
-  border-color: rgba(0, 255, 255, 0.3);
+  width: 110px;
+  height: 110px;
+  background: rgba(0, 255, 255, 0.15);
+  border-color: rgba(0, 255, 255, 0.4);
 }
 
 #control-boost {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: rgba(255, 215, 0, 0.3);
-  font-size: 1rem;
-  width: 90px;
-  height: 90px;
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.4);
+  font-size: 0.9rem;
 }
 
-.mobile-only {
-  display: none;
+@media (max-width: 1024px) or (pointer: coarse) {
+  #mobile-controls {
+    display: flex;
+  }
 }
 
 /* Orientation handling */
-@media (orientation: portrait) {
+@media (orientation: landscape) {
+  body {
+    align-items: flex-start;
+  }
+
+  #game-container {
+    height: 70vh;
+    /* Shorter in landscape to prevent clipping */
+    margin-top: 5vh;
+  }
+
   #mobile-controls {
-    padding: 0 20px 80px 20px;
+    height: 100px;
+    padding: 0 max(20px, env(safe-area-inset-right)) 10px max(20px, env(safe-area-inset-left));
   }
 
   .control-btn {
-    width: 70px;
-    height: 70px;
+    width: 65px;
+    height: 65px;
     font-size: 1.4rem;
-  }
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-  .mobile-only {
-    display: flex;
-  }
-
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-
-  #start-screen {
-    padding: 30px;
-    width: 85%;
-    max-width: 400px;
-  }
-
-  .theme-selector {
-    flex-wrap: wrap;
-  }
-
-  .theme-btn {
-    padding: 8px 15px;
-    font-size: 0.7rem;
-  }
-
-  #start-btn {
-    padding: 15px 40px;
-    font-size: 1.4rem;
-  }
-
-  #score-board {
-    font-size: 1.5rem;
-  }
-
-  .ui-btn {
-    font-size: 1.2rem;
-    padding: 8px 12px;
-  }
-}
-
-@media (pointer: coarse) {
-
-  /* Ensure touch targets are large enough */
-  .control-btn {
-    width: 80px;
-    height: 80px;
   }
 
   #control-jump {
-    width: 120px;
+    width: 85px;
+    height: 85px;
+  }
+
+  #control-boost {
+    width: 65px;
+    height: 65px;
+    font-size: 0.7rem;
+  }
+
+  /* Hide ads/overlays that take too much space in landscape */
+  #container-5020fd43cfcd5846c20c4be22f4d53a0 {
+    display: none !important;
+  }
+}
+
+@media (orientation: portrait) {
+  #mobile-controls {
+    padding: 0 max(15px, env(safe-area-inset-right)) 80px max(15px, env(safe-area-inset-left));
+  }
+
+  .control-btn {
+    width: 75px;
+    height: 75px;
+    font-size: 1.5rem;
+  }
+
+  #control-jump {
+    width: 95px;
+    height: 95px;
   }
 }
 
 /* Premium Styles */
-#premium-btn {
-  margin-top: 10px;
-  padding: 15px 40px;
-  font-size: 1.2rem;
-  font-weight: 900;
-  background: linear-gradient(45deg, #ffd700, #ff8c00);
-  border: none;
-  border-radius: 100px;
-  color: #000;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-}
-
-#premium-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-}
-
 #premium-badge {
   background: linear-gradient(45deg, #ffd700, #ff8c00);
   color: #000;
@@ -354,18 +347,14 @@ h1 {
   }
 }
 
-.premium-mode #score-board {
-  color: #ffd700;
-  text-shadow: 0 0 20px #ffd700;
-}
+@keyframes pulse {
 
+  0%,
+  100% {
+    opacity: 1;
+  }
 
-#premium-btn.disabled {
-  background: #333;
-  color: #666;
-  cursor: not-allowed;
-  box-shadow: none;
-  filter: grayscale(1);
-  opacity: 0.7;
-  transform: none !important;
+  50% {
+    opacity: 0.7;
+  }
 }
