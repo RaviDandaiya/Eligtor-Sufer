@@ -358,3 +358,48 @@ h1 {
     opacity: 0.7;
   }
 }
+
+/* Referral Container Styling */
+#referral-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
+  pointer-events: auto;
+}
+
+#referral-container:hover {
+  transform: scale(1.1) translateY(-5px);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.6));
+}
+
+#referral-container img {
+  border-radius: 8px;
+  border: 2px solid #00ffff;
+  display: block;
+  max-width: 100px;
+  height: auto;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+@media (max-width: 1024px) or (pointer: coarse) {
+  #referral-container {
+    bottom: 160px;
+    /* Above mobile controls in portrait */
+    right: 15px;
+  }
+
+  #referral-container img {
+    max-width: 80px;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 1024px) {
+  #referral-container {
+    bottom: 110px;
+    /* Adjusted for landscape mobile controls */
+    right: 20px;
+  }
+}

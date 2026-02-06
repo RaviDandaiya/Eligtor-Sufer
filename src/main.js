@@ -1,4 +1,4 @@
-import './style.css'
+// CSS imported via link tag in index.html
 import Game from './Game.js'
 
 const initApp = () => {
